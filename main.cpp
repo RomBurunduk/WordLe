@@ -44,7 +44,7 @@ int main() {
     setlocale(LC_ALL, "Russian");
     std::string alph{"абвгдежзийклмнопрстуфхчцщшъыьэюя"};
     std::ifstream in("/Users/romburunduk/CLionProjects/untitled/dict.txt");
-
+    // Количество слов в изначальном словаре
     int n=4914;
 
     // рабочий словарь (который будет урезаться)
