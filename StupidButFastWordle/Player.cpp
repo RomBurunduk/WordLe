@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Interactor.cpp"
-#include "Init.cpp"
 #include <iostream>
 
 using namespace std;
