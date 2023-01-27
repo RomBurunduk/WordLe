@@ -13,9 +13,11 @@
 using namespace std;
 
 
-array<bitset<5>, 33> state;
-array<int, 33> letterCost;
-array<set<int>, 33> must;
+array<bitset<5>, 32> state;
+array<int, 32> letterCost;
+array<set<int>, 32> must;
+array<int, 32> letterCountInAnswer;
+
 map<ll, string> translate;
 
 bitset<5> ALL = 0b11111;

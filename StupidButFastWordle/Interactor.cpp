@@ -10,32 +10,42 @@ using namespace std;
 
 struct Interactor {
     Word ans;
+    array<char, 32> count;
 
-    Interactor(Word ans) { this->ans = ans; }
+    Interactor(Word ans) { 
+        this->ans = ans;
+        fill(count.begin(), count.end(), 0);
+        for(int i = 0;i < WORD_LEN;i++)
+            count[ans[i]]++;
+    }
+
     Interactor() {}
 
     int num_queries = 0;
 
-    vector<pair<char, bitset<WORD_LEN>>> Query(Word s) {
-        num_queries++;
-        //cout << "Query num: " << num_queries << ' ' << s.s << endl;
-        vector<pair<char, bitset<WORD_LEN>>> res;
+    //color[i] == 1 -> ith card is green
+    //color[i] == 2 -> ith card is yellow
+    //color[i] == 0 -> ith card is gray
+    array<char, 5> Query(Word s) {
+        array<char, 5> color = {0, 0, 0, 0, 0};
+        array<char, 32> count = this->count;
+
         for(int i = 0;i < WORD_LEN;i++) {
             if(ans[i] == s[i]) {
-                must[s[i]].insert(i);
-                for(int j = 0;j < 32;j++) {
-                    if(j != s[i]) {
-                        state[j] &= ALL ^ bitset<WORD_LEN>(1 << i);
-                    }
-                }
-
-            } else if(ans.find(s[i]) != string::npos) {
-                res.push_back({s[i], ALL ^ (bitset<WORD_LEN>(1 << i))});
-            } else {
-                res.push_back({s[i], bitset<WORD_LEN>()});
+                color[i] = 1;
+                count[s[i]]--;
             }
         }
-        return res;
+        for(int i = 0;i < WORD_LEN;i++) {
+            if(count[s[i]] != 0 && color[i] != 1) {
+                color[i] = 2;
+                count[s[i]]--;
+            } else if(color[i] != 1) {
+                color[i] = 0;
+            } 
+        }
+
+        return color;
     }
 
 };

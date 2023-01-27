@@ -9,15 +9,14 @@ using ll = long long;
 
 struct Word {
     ll word = 0;
+    array<char, 32> count;
 
     Word() {};
 
     Word(string s) {
-        word |= GetByte(s[0], 0) << 0;
-        word |= GetByte(s[1], 0) << 8;
-        word |= GetByte(s[2], 0) << 16;
-        word |= GetByte(s[3], 0) << 24;
-        word |= GetByte(s[4], 0) << 32;
+        fill(count.begin(), count.end(), 0);
+        for(int i = 0;i < 5;i++)
+            count[GetByte(s[i], 0)]++, word |= GetByte(s[i], 0) << (8 * i);
     }
 
     ll GetSymb(int pos) {
