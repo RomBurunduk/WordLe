@@ -71,6 +71,7 @@ int main() {
     std::vector<int> con(5);
     std::string OptWord;
     std::vector<int> att(6);
+    std::vector<std::string> WrAns;
 
 
 
@@ -121,7 +122,7 @@ int main() {
                         i += 1;
                     }
                 }
-                if (i != 0 && i != dict.size()) {
+                if (i != 0 && i < dict.size()) {
                     mp.insert(std::make_pair(i, alph.substr(l * 2, 2)));
                 }
             }
@@ -183,6 +184,8 @@ int main() {
         mp.clear();
         if (con[0]==0){
             wins++;
+        } else {
+            WrAns.push_back(ans);
         }
         n=4914;
         att[attempts-1]+=1;
@@ -194,5 +197,9 @@ int main() {
     for (int i = 0; i < 6; ++i) {
         std::cout<<i+1<<' '<<att[i]<<std::endl;
     }
+    for (std::string str : WrAns) {
+        std::cout<<str<<' ';
+    }
+    std::cout<<std::endl;
 
 }
