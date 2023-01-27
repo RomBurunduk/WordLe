@@ -33,12 +33,15 @@ int calc(Word s, vector<int> &rate) {
 int check(Word s) {
     int score = 1;
     int cnt = 0;
+
     for(int j = 0;j < 32;j++) {
         int i = j;
         for(auto pos : must[i]) {
-            if(s.GetSymb(pos) != i)
+            if(s.GetSymb(pos) != i) 
                 return 0;
         }
+        if(s.count[j] < letterCountInAnswer[j])
+            return 0;
     }
 
     for(int i = 0;i < WORD_LEN;i++) {
@@ -52,8 +55,10 @@ int check(Word s) {
 }
 
 void solve(Word word) {
-    for(int i = 0;i < 33;i++)
+    for(int i = 0;i < 32;i++)
         state[i] = ALL, must[i].clear();
+
+    fill(letterCountInAnswer.begin(), letterCountInAnswer.end(), 0);
 
     guessedWord = word;
 
@@ -83,12 +88,12 @@ void solve(Word word) {
         }
 
         for(int i = 0;i < 32;i++) {
-            rate[i] = (state[i].count()) * sqrt(letterCost[i]) * must[i].empty();
+            rate[i] = (state[i].count()) * (letterCost[i]) * must[i].empty();
         }
 
         for(int i = 0;i < all.size();i++) {
             if(!goodWord[i]) continue;
-            int newVal = check(all[i]) + calc(all[i], rate);
+            int newVal = calc(all[i], rate);
             if(bestScore < newVal) {
                 bestPos = i;
                 bestScore = newVal;
@@ -112,15 +117,23 @@ void solve(Word word) {
         }
     }
     
-    //cout << summ << endl;
-    
+    // cout << check(word) << endl;
+    // for(int i = 0;i < WORD_LEN;i++) {
+    //     cout << letterCountInAnswer[word[i]] << ':' << (int)word.count[word[i]] << endl;
+    // }
+    // for(int i = 0;i < WORD_LEN;i++) {
+    //     cout << state[guessedWord[i]] << endl;
+    // }
+
     if(guessedWord != all[bestPos]) {
         wins--;
         cout << "WA: " << translate[guessedWord.word] << ", ";
         cout << "I'm think it is " << translate[all[bestPos].word] << endl; 
     }
 }
-
+/*
+281
+*/
 int main() {
 
     setlocale(LC_ALL, "Russian");
@@ -132,10 +145,12 @@ int main() {
     wins = all.size();
 
     double time = clock();    
-
+#ifdef DEBUG
+    solve(all[281]);
+#else
     for(auto e : all)
         solve(e);
-
+#endif
     cout << (double)(wins) / (double)(all.size()) << endl;
 
     cout << (clock() - time) / (double)CLOCKS_PER_SEC << endl;
