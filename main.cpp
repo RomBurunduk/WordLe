@@ -83,7 +83,7 @@ int main() {
     for (std::string ans: optimal) {
 
         // слово
-        std::string wor("актер");
+        std::string wor("кроат");
         // условия
         //    std::cout<<"Введите слово"<<std::endl;
         //    std::cin>>wor;
