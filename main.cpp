@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <map>
 #include <random>
+#include <array>
+#include <typeinfo>
 
 // функция удаления по индексу
 void rem(std::vector<std::string> &v, size_t index){
@@ -13,23 +15,66 @@ void rem(std::vector<std::string> &v, size_t index){
     v.erase(it);
 }
 
-std::vector<int> conditions(std::string str, std::string ans){
-    std::vector<int> report(5);
-    if (str==ans){
-        report={0,3,3,3,3};
-        return report;
+int MyCount(std::string s1,std::string s2){
+    int cnt = 0;
+    for(int i = 0; i < 5; ++i)
+        if (s1.substr(i*2,2)==s2)
+            cnt++;
+    return cnt;
+}
+
+void normalaize(std::string word, std::vector<int> &con){
+    std::map<std::string, int> mp;
+    for (int i = 0; i < 5; ++i) {
+        if (con[i]!=1)
+            mp[word.substr(i*2,2)]++;
     }
     for (int i = 0; i < 5; ++i) {
-        if (str.substr(i*2,2)==ans.substr(i*2,2)){
-            report[i]=3;
-        } else if (ans.find(str.substr(i*2,2))!=std::string::npos){
-            report[i]=2;
+        if (mp[word.substr(i*2,2)]!=0 && con[i]==1)
+            con[i]=2;
+    }
+}
+
+bool LettersInWord(std::string word, std::map<std::string, std::array<int,2>> con){
+    for(auto it=con.begin();it!=con.end();it++){
+        if (it->second[1]==0) {
+            if (MyCount(word, it->first) != it->second[0])
+                return false;
         } else {
-            report[i]=1;
+            if (MyCount(word, it->first) < it->second[0])
+                return false;
+        }
+    }
+    return true;
+}
+
+std::vector<int> conditions(const std::string &word, const std::string &ans){
+    std::vector<int> report(5,1);
+    if (ans == word)
+        return {0,0,0,0,0};
+    std::map<std::string,int> letters;
+    for (int i = 0; i < 5; ++i)
+        letters[ans.substr(i * 2, 2)]++;
+    for (int i = 0; i < 5; ++i) {
+        if (ans.substr(i*2,2)==word.substr(i*2,2)){
+            report[i]=3;
+            letters[word.substr(i*2,2)]--;
+        }
+    }
+    for (int i = 0; i < 5; ++i) {
+        if (ans.substr(i*2,2)!=word.substr(i*2,2) && ans.find(word.substr(i*2,2))!=std::string::npos){
+            if (letters[word.substr(i*2,2)]==0)
+                report[i]=1;
+            else {
+                report[i]=2;
+                letters[word.substr(i*2,2)]--;
+            }
         }
     }
     return report;
 }
+
+
 
 // функция фильтрации по условию игры на букву
 bool f(std::string letter, int pos, int num, std::string word){
@@ -64,14 +109,17 @@ int main() {
     }
     // словарь для поика оптимального слова
     std::vector<std::string> const optimal=dict;
-
-    std::mt19937 rnd(12);
+    std::random_device dev;
+    std::mt19937 rnd(dev());
     std::multimap<int, std::string> mp;
     double wins=0;
     std::vector<int> con(5);
     std::string OptWord;
     std::vector<int> att(6);
     std::vector<std::string> WrAns;
+    std::map<std::string, std::array<int,2>> NumOfLetters;  //{колчичество, режим (0-строго, 1-нестрого)}
+
+
 
 
 
@@ -90,29 +138,38 @@ int main() {
         //    std::cout<<"Введите условия"<<std::endl;
         // считывание условия
         con = conditions(wor, ans);
-
-
+        std::map<std::string, std::array<int,2>> rate;  //{gray, not gray}
+        for (int i = 0; i < 5; ++i) {
+            if (con[i] != 1)
+                rate[wor.substr(i * 2, 2)][1]++;
+            else
+                rate[wor.substr(i * 2, 2)][0]++;
+        }
+        normalaize(wor,con);
+        auto iter=rate.begin();
+        for (;iter!=rate.end();iter++){
+            if (iter->second[0]==0 && iter->second[1]!=0)
+                NumOfLetters[iter->first]={iter->second[1],1};
+            else if (iter->second[0]!=0 && iter->second[1]==0)
+                NumOfLetters[iter->first]={0,0};
+            else
+                NumOfLetters[iter->first]={iter->second[1],0};
+        }
         int attempts=1;
 
 
         while (con[0] != 0 && attempts<6) {
             int t = 0;
-            while (t < n) {   // филтрация словарая по условию
-                if (f(wor.substr(0, 2), 0, con[0], dict[t]) && f(wor.substr(2, 2), 2, con[1], dict[t]) &&
+            while (t < n) {     // филтрация словарая по условию
+                if (LettersInWord(dict[t],NumOfLetters) && f(wor.substr(0, 2), 0, con[0], dict[t]) && f(wor.substr(2, 2), 2, con[1], dict[t]) &&
                     f(wor.substr(4, 2), 4, con[2], dict[t]) && f(wor.substr(6, 2), 6, con[3], dict[t]) &&
                     f(wor.substr(8, 2), 8, con[4], dict[t])) {
-                    //                std::cout<<dict[t]<<' ';
                     t += 1;
                 } else {
                     rem(dict, t);
                     n--;
                 }
             }
-            //        std::cout<<std::endl;
-            // окончание работы программы если в словре осталось немколько слов
-            //        if (dict.size()<=2){
-            //            return 0;
-            //        }
 
             // составление рейтинга букв
             for (int l = 0; l < 32; l++) {
@@ -177,19 +234,40 @@ int main() {
 
 //            std::cout << "Введите условия" << std::endl;
             con = conditions(wor, ans);
+            rate.clear();
+            for (int i = 0; i < 5; ++i) {
+                if (con[i] != 1)
+                    rate[wor.substr(i * 2, 2)][1]++;
+                else
+                    rate[wor.substr(i * 2, 2)][0]++;
+            }
+            normalaize(wor,con);
+            iter=rate.begin();
+            NumOfLetters.clear();
+//            std::map<std::string, std::array<int,2>> NumOfLetters;  //{колчичество, режим (0-строго, 1-нестрого)}
+            for (;iter!=rate.end();iter++){
+                if (iter->second[0]==0 && iter->second[1]!=0)
+                    NumOfLetters[iter->first]={iter->second[1],1};
+                else if (iter->second[0]!=0 && iter->second[1]==0)
+                    NumOfLetters[iter->first]={0,0};
+                else
+                    NumOfLetters[iter->first]={iter->second[1],0};
+            }
             attempts++;
             mp.clear();
         }
         if (con[0]==0){
             wins++;
+            att[attempts-1]+=1;
         } else {
-            wins+=1.0/dict.size();
+            //wins+=1.0/dict.size();
             WrAns.push_back(ans);
         }
+        NumOfLetters.clear();
+        rate.clear();
         mp.clear();
         dict=optimal;
         n=4914;
-        att[attempts-1]+=1;
         std::cout<<ans<<' '<<wins<<' '<<attempts<<std::endl;
 
     }
