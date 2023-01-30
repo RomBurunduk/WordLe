@@ -13,15 +13,18 @@
 using namespace std;
 
 
-array<bitset<5>, 33> state;
-array<int, 33> letterCost;
-array<set<int>, 33> must;
+array<bitset<5>, 32> state;
+array<int, 32> letterCost;
+array<set<int>, 32> must;
+array<int, 32> letterCountInAnswer;
+
 map<ll, string> translate;
 
 bitset<5> ALL = 0b11111;
 const int NOT_FOUND = -1;
 const int WRONG_PLACE = -2;
 const int WORD_LEN = 5;
+const int HASH_SIZE = 3;
 
 vector<Word> all;
 string alph{"абвгдежзийклмнопрстуфхчцщшъыьэюя"};
@@ -44,12 +47,3 @@ void ReadDict() {
     }
     
 }
-
-void CountLetterFreq() {
-    for(auto e : all) {
-        for(int i = 0;i < WORD_LEN;i++) {
-            letterCost[e[i]]++;
-        }
-    }
-}
-
