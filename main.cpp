@@ -65,7 +65,7 @@ int main() {
     // словарь для поика оптимального слова
     std::vector<std::string> const optimal=dict;
 
-    std::mt19937 rnd(4321);
+    std::mt19937 rnd(12);
     std::multimap<int, std::string> mp;
     double wins=0;
     std::vector<int> con(5);
@@ -180,20 +180,21 @@ int main() {
             attempts++;
             mp.clear();
         }
-        dict=optimal;
-        mp.clear();
         if (con[0]==0){
             wins++;
         } else {
+            wins+=1.0/dict.size();
             WrAns.push_back(ans);
         }
+        mp.clear();
+        dict=optimal;
         n=4914;
         att[attempts-1]+=1;
         std::cout<<ans<<' '<<wins<<' '<<attempts<<std::endl;
 
     }
 
-    std::cout<<wins*100.0/4914.0<<std::endl;
+    std::cout<<wins*100.0/4914.0<<"%"<<std::endl;
     for (int i = 0; i < 6; ++i) {
         std::cout<<i+1<<' '<<att[i]<<std::endl;
     }
