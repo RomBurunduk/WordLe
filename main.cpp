@@ -6,7 +6,6 @@
 #include <map>
 #include <random>
 #include <array>
-#include <typeinfo>
 
 // функция удаления по индексу
 void rem(std::vector<std::string> &v, size_t index){
@@ -207,7 +206,7 @@ int main() {
                 for (int i = 5; i > 1; --i) {
                     for (std::string s: optimal) {
                         if ((s.find(l1) != std::string::npos) + (s.find(l2) != std::string::npos) +
-                            (s.find(l3) != std::string::npos) + (s.find(l4) != std::string::npos) == i) {
+                            (s.find(l3) != std::string::npos) + (s.find(l4) != std::string::npos) + (s.find(l5) != std::string::npos) == i) {
 //                            std::cout << "Оптимальное слово: " << s << std::endl;
                             OptWord = s;
                             OptFlag = true;
