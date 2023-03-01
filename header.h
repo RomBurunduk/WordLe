@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <string>
 #include <vector>
 #include <fstream>
@@ -6,6 +6,8 @@
 #include <map>
 #include <random>
 #include <array>
+#include <Carbon/Carbon.h>
+#include <thread>
 
 // функция удаления по индексу
 void rem(std::vector<std::string> &v, size_t index){
@@ -35,7 +37,7 @@ void normalaize(std::string word, std::vector<int> &con){
 }
 
 bool LettersInWord(std::string word, std::map<std::string, std::array<int,2>> con){
-    for(auto it=con.begin();it!=con.end();it++){
+    for (auto it=con.begin();it!=con.end();it++) {
         if (it->second[1]==0) {
             if (MyCount(word, it->first) != it->second[0])
                 return false;
@@ -77,7 +79,7 @@ std::vector<int> conditions(const std::string &word, const std::string &ans){
 
 // функция фильтрации по условию игры на букву
 bool f(std::string letter, int pos, int num, std::string word){
-    int p=word.find(letter,pos);
+    int p = (int) word.find(letter,pos);
     switch (num) {
         case 1:
             return word.find(letter)==std::string::npos;
@@ -92,3 +94,25 @@ bool f(std::string letter, int pos, int num, std::string word){
             break;
     }
 }
+
+
+void emulateKeyPress(CGKeyCode keyCode) {
+    CGEventRef keyDownEvent = CGEventCreateKeyboardEvent(NULL, keyCode, true);
+    CGEventPost(kCGHIDEventTap, keyDownEvent);
+    CFRelease(keyDownEvent);
+
+    CGEventRef keyUpEvent = CGEventCreateKeyboardEvent(NULL, keyCode, false);
+    CGEventPost(kCGHIDEventTap, keyUpEvent);
+    CFRelease(keyUpEvent);
+}
+
+std::map<std::string, int> alph={{"а",3},{"б",43},{"в",2},{"г",32},{"д",37},{"е",17},{"ж",41},{"з",35},{"и",11},{"й",12},{"к",15},{"л",40},{"м",9},{"н",16},{"о",38},{"п",5},{"р",4},{"с",8},{"т",45},{"у",14},{"ф",0},{"х",33},{"ц",13},{"ч",7},{"ш",34},{"щ",31},{"ъ",30},{"ы",1},{"ь",46},{"э",39},{"ю",47},{"я",6}};
+
+void Type(std::string &s){
+    for (int i = 0; i < s.size()/2; ++i) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        emulateKeyPress(alph[s.substr(i*2,2)]);
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+}
+

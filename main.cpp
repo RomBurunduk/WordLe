@@ -1,37 +1,30 @@
-#include <iostream>
-#include <string>
-#include <vector>
-#include <algorithm>
-#include <map>
-#include <random>
-#include <array>
 #include "header.h"
 
 
-
 int main() {
+    std::ios_base::sync_with_stdio(false);
     setlocale(LC_ALL, "Russian");
     std::string alph{"абвгдежзийклмнопрстуфхчцщшъыьэюя"};
     std::ifstream in("/Users/romburunduk/CLionProjects/untitled/dict.txt");
     // Количество слов в изначальном словаре
-    int n=4914;
+    int n = 4914;
 
     // рабочий словарь (который будет урезаться)
     std::vector<std::string> dict(n);
-    for (int i=0; i<n; i++) {
-        in>>dict[i];
+    for (int i = 0; i < n; i++) {
+        in >> dict[i];
     }
     // словарь для поика оптимального слова
-    std::vector<std::string> const optimal=dict;
+    std::vector<std::string> const optimal = dict;
     std::random_device dev;
     std::mt19937 rnd(dev());
     std::multimap<int, std::string> mp;
-    double wins=0;
+    double wins = 0;
     std::vector<int> con(5);
     std::string OptWord;
     std::vector<int> att(6);
     std::vector<std::string> WrAns;
-    std::map<std::string, std::array<int,2>> NumOfLetters;  //{колчичество, режим (0-строго, 1-нестрого)}
+    std::map<std::string, std::array<int, 2>> NumOfLetters;  //{колчичество, режим (0-строго, 1-нестрого)}
 
 
 
@@ -47,35 +40,32 @@ int main() {
         // слово
         std::string wor("кроат");
         // условия
-        //    std::cout<<"Введите слово"<<std::endl;
-        //    std::cin>>wor;
-        //    std::cout<<"Введите условия"<<std::endl;
-        // считывание условия
         con = conditions(wor, ans);
-        std::map<std::string, std::array<int,2>> rate;  //{gray, not gray}
+        std::map<std::string, std::array<int, 2>> rate;  //{gray, not gray}
         for (int i = 0; i < 5; ++i) {
             if (con[i] != 1)
                 rate[wor.substr(i * 2, 2)][1]++;
             else
                 rate[wor.substr(i * 2, 2)][0]++;
         }
-        normalaize(wor,con);
-        auto iter=rate.begin();
-        for (;iter!=rate.end();iter++){
-            if (iter->second[0]==0 && iter->second[1]!=0)
-                NumOfLetters[iter->first]={iter->second[1],1};
-            else if (iter->second[0]!=0 && iter->second[1]==0)
-                NumOfLetters[iter->first]={0,0};
+        normalaize(wor, con);
+        auto iter = rate.begin();
+        for (; iter != rate.end(); iter++) {
+            if (iter->second[0] == 0 && iter->second[1] != 0)
+                NumOfLetters[iter->first] = {iter->second[1], 1};
+            else if (iter->second[0] != 0 && iter->second[1] == 0)
+                NumOfLetters[iter->first] = {0, 0};
             else
-                NumOfLetters[iter->first]={iter->second[1],0};
+                NumOfLetters[iter->first] = {iter->second[1], 0};
         }
-        int attempts=1;
+        int attempts = 1;
 
 
-        while (con[0] != 0 && attempts<6) {
+        while (con[0] != 0 && attempts < 6) {
             int t = 0;
             while (t < n) {     // филтрация словарая по условию
-                if (LettersInWord(dict[t],NumOfLetters) && f(wor.substr(0, 2), 0, con[0], dict[t]) && f(wor.substr(2, 2), 2, con[1], dict[t]) &&
+                if (LettersInWord(dict[t], NumOfLetters) && f(wor.substr(0, 2), 0, con[0], dict[t]) &&
+                    f(wor.substr(2, 2), 2, con[1], dict[t]) &&
                     f(wor.substr(4, 2), 4, con[2], dict[t]) && f(wor.substr(6, 2), 6, con[3], dict[t]) &&
                     f(wor.substr(8, 2), 8, con[4], dict[t])) {
                     t += 1;
@@ -100,9 +90,6 @@ int main() {
 
             // выводим оставшего алфавита
             std::map<int, std::string>::iterator it = mp.begin();
-            //        for (; it != mp.end(); it++) {
-            //            std::cout << it->first << " " << it->second << std::endl;
-            //        }
 
             //  вывод оптимального слова
             bool OptFlag = false;
@@ -121,7 +108,8 @@ int main() {
                 for (int i = 5; i > 1; --i) {
                     for (std::string s: optimal) {
                         if ((s.find(l1) != std::string::npos) + (s.find(l2) != std::string::npos) +
-                            (s.find(l3) != std::string::npos) + (s.find(l4) != std::string::npos) + (s.find(l5) != std::string::npos) == i) {
+                            (s.find(l3) != std::string::npos) + (s.find(l4) != std::string::npos) +
+                            (s.find(l5) != std::string::npos) == i) {
 //                            std::cout << "Оптимальное слово: " << s << std::endl;
                             OptWord = s;
                             OptFlag = true;
@@ -138,15 +126,8 @@ int main() {
                 wor = OptWord;
             } else {
                 wor = dict[rnd() % dict.size()];
-                //            std::cout<<"Оптимальное слово: "<<wor<<std::endl;
-                //            std::cout<<"Введите слово"<<std::endl;
-                //            std::cin>>wor;
-                //            if (wor=="все") {
-                //                break;
-                //            }
             }
 
-//            std::cout << "Введите условия" << std::endl;
             con = conditions(wor, ans);
             rate.clear();
             for (int i = 0; i < 5; ++i) {
@@ -155,44 +136,43 @@ int main() {
                 else
                     rate[wor.substr(i * 2, 2)][0]++;
             }
-            normalaize(wor,con);
-            iter=rate.begin();
+            normalaize(wor, con);
+            iter = rate.begin();
             NumOfLetters.clear();
-//            std::map<std::string, std::array<int,2>> NumOfLetters;  //{колчичество, режим (0-строго, 1-нестрого)}
-            for (;iter!=rate.end();iter++){
-                if (iter->second[0]==0 && iter->second[1]!=0)
-                    NumOfLetters[iter->first]={iter->second[1],1};
-                else if (iter->second[0]!=0 && iter->second[1]==0)
-                    NumOfLetters[iter->first]={0,0};
+            for (; iter != rate.end(); iter++) {
+                if (iter->second[0] == 0 && iter->second[1] != 0)
+                    NumOfLetters[iter->first] = {iter->second[1], 1};
+                else if (iter->second[0] != 0 && iter->second[1] == 0)
+                    NumOfLetters[iter->first] = {0, 0};
                 else
-                    NumOfLetters[iter->first]={iter->second[1],0};
+                    NumOfLetters[iter->first] = {iter->second[1], 0};
             }
             attempts++;
             mp.clear();
         }
-        if (con[0]==0){
+        if (con[0] == 0) {
             wins++;
-            att[attempts-1]+=1;
+            att[attempts - 1] += 1;
         } else {
-            //wins+=1.0/dict.size();
+            wins += 1.0 / dict.size();
             WrAns.push_back(ans);
         }
         NumOfLetters.clear();
         rate.clear();
         mp.clear();
-        dict=optimal;
-        n=4914;
-        std::cout<<ans<<' '<<wins<<' '<<attempts<<std::endl;
+        dict = optimal;
+        n = 4914;
+        std::cout << ans << ' ' << wins << ' ' << attempts << std::endl;
 
     }
 
-    std::cout<<wins*100.0/4914.0<<"%"<<std::endl;
+    std::cout << wins * 100.0 / 4914.0 << "%" << std::endl;
     for (int i = 0; i < 6; ++i) {
-        std::cout<<i+1<<' '<<att[i]<<std::endl;
+        std::cout << i + 1 << ' ' << att[i] << std::endl;
     }
-    for (std::string str : WrAns) {
-        std::cout<<str<<' ';
+    for (std::string str: WrAns) {
+        std::cout << str << ' ';
     }
-    std::cout<<std::endl;
+    std::cout << std::endl;
 
 }
