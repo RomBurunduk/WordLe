@@ -2,6 +2,7 @@
 
 
 int main() {
+    sleep(1);
     std::ios_base::sync_with_stdio(false);
     setlocale(LC_ALL, "Russian");
     std::string alph{"абвгдежзийклмнопрстуфхчцщшъыьэюя"};
@@ -35,12 +36,15 @@ int main() {
 
 
 
-    for (std::string ans: optimal) {
-
+    for (int times=0; times<3; times++) {
+        int line=0;
         // слово
         std::string wor("кроат");
+        Type(wor);
+        sleep(1);
         // условия
-        con = conditions(wor, ans);
+        con = condit(line);
+        line++;
         std::map<std::string, std::array<int, 2>> rate;  //{gray, not gray}
         for (int i = 0; i < 5; ++i) {
             if (con[i] != 1)
@@ -61,7 +65,7 @@ int main() {
         int attempts = 1;
 
 
-        while (con[0] != 0 && attempts < 6) {
+        while (attempts < 7 && !std::all_of(con.begin(),con.end(),[](int c){return c==3;})) {
             int t = 0;
             while (t < n) {     // филтрация словарая по условию
                 if (LettersInWord(dict[t], NumOfLetters) && f(wor.substr(0, 2), 0, con[0], dict[t]) &&
@@ -128,7 +132,10 @@ int main() {
                 wor = dict[rnd() % dict.size()];
             }
 
-            con = conditions(wor, ans);
+            Type(wor);
+            sleep(2);
+            con=condit(line);
+            line++;
             rate.clear();
             for (int i = 0; i < 5; ++i) {
                 if (con[i] != 1)
@@ -150,29 +157,24 @@ int main() {
             attempts++;
             mp.clear();
         }
-        if (con[0] == 0) {
-            wins++;
-            att[attempts - 1] += 1;
-        } else {
-            wins += 1.0 / dict.size();
-            WrAns.push_back(ans);
-        }
         NumOfLetters.clear();
         rate.clear();
         mp.clear();
         dict = optimal;
         n = 4914;
-        std::cout << ans << ' ' << wins << ' ' << attempts << std::endl;
+        sleep(2);
+        emulateKeyPress(kVK_Return);
+        sleep(2);
 
     }
 
-    std::cout << wins * 100.0 / 4914.0 << "%" << std::endl;
-    for (int i = 0; i < 6; ++i) {
-        std::cout << i + 1 << ' ' << att[i] << std::endl;
-    }
-    for (std::string str: WrAns) {
-        std::cout << str << ' ';
-    }
-    std::cout << std::endl;
+//    std::cout << wins * 100.0 / 4914.0 << "%" << std::endl;
+//    for (int i = 0; i < 6; ++i) {
+//        std::cout << i + 1 << ' ' << att[i] << std::endl;
+//    }
+//    for (std::string str: WrAns) {
+//        std::cout << str << ' ';
+//    }
+//    std::cout << std::endl;
 
 }

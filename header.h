@@ -8,6 +8,7 @@
 #include <array>
 #include <Carbon/Carbon.h>
 #include <thread>
+#include <opencv2/opencv.hpp>
 
 // функция удаления по индексу
 void rem(std::vector<std::string> &v, size_t index){
@@ -110,9 +111,32 @@ std::map<std::string, int> alph={{"а",3},{"б",43},{"в",2},{"г",32},{"д",37}
 
 void Type(std::string &s){
     for (int i = 0; i < s.size()/2; ++i) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
         emulateKeyPress(alph[s.substr(i*2,2)]);
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
+    emulateKeyPress(kVK_Return);
+}
+
+
+cv::Vec3b green={94,182,135};
+cv::Vec3b gray={194,174,166};
+std::vector<int> condit(int line){
+    std::vector<int> c(5);
+    int y=377+126*line, x=1177;
+    std::system("screencapture ~/Desktop/myscreen.png");
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    cv::Mat image = cv::imread("/Users/romburunduk/Desktop/myscreen.png"); // загрузка изображения
+    for (int i = 0; i < 5; ++i, x+=125) {
+        cv::Point pixel(x, y); // координаты пикселя
+        cv::Vec3b color = image.at<cv::Vec3b>(pixel); // получение цвета пикселя
+        if ((green[0]-10<color[0] && color[0]<green[0]+10) && (green[1]-10<color[1] && color[1]<green[1]+10) && (green[2]-10<color[2] && color[2]<green[2]+10))
+            c[i] = 3;
+        else if ((gray[0]-10<color[0] && color[0]<gray[0]+10) && (gray[1]-10<color[1] && color[1]<gray[1]+10) && (gray[2]-10<color[2] && color[2]<gray[2]+10))
+            c[i] = 1;
+        else
+            c[i] = 2;
+    }
+    return c;
 }
 
