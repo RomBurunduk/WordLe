@@ -124,7 +124,7 @@ cv::Vec3b gray={194,174,166};
 std::vector<int> condit(int line){
     std::vector<int> c(5);
     int y=377+126*line, x=1177;
-    std::system("screencapture ~/Desktop/myscreen.png");
+    std::system("screencapture -x ~/Desktop/myscreen.png");
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     cv::Mat image = cv::imread("/Users/romburunduk/Desktop/myscreen.png"); // загрузка изображения
     for (int i = 0; i < 5; ++i, x+=125) {

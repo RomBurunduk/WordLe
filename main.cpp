@@ -36,8 +36,8 @@ int main() {
 
 
 
-    for (int times=0; times<3; times++) {
-        int line=0;
+    for (int times = 0; times < 10; times++) {
+        int line = 0;
         // слово
         std::string wor("кроат");
         Type(wor);
@@ -68,11 +68,11 @@ int main() {
         while (attempts < 7 && !std::all_of(con.begin(),con.end(),[](int c){return c==3;})) {
             int t = 0;
             while (t < n) {     // филтрация словарая по условию
-                if (LettersInWord(dict[t], NumOfLetters) && f(wor.substr(0, 2), 0, con[0], dict[t]) &&
-                    f(wor.substr(2, 2), 2, con[1], dict[t]) &&
-                    f(wor.substr(4, 2), 4, con[2], dict[t]) && f(wor.substr(6, 2), 6, con[3], dict[t]) &&
-                    f(wor.substr(8, 2), 8, con[4], dict[t])) {
-                    t += 1;
+                if (LettersInWord(dict.at(t), NumOfLetters) && f(wor.substr(0, 2), 0, con[0], dict.at(t)) &&
+                    f(wor.substr(2, 2), 2, con[1], dict.at(t)) &&
+                    f(wor.substr(4, 2), 4, con[2], dict.at(t)) && f(wor.substr(6, 2), 6, con[3], dict.at(t)) &&
+                    f(wor.substr(8, 2), 8, con[4], dict.at(t))) {
+                    t++;
                 } else {
                     rem(dict, t);
                     n--;
@@ -165,16 +165,5 @@ int main() {
         sleep(2);
         emulateKeyPress(kVK_Return);
         sleep(2);
-
     }
-
-//    std::cout << wins * 100.0 / 4914.0 << "%" << std::endl;
-//    for (int i = 0; i < 6; ++i) {
-//        std::cout << i + 1 << ' ' << att[i] << std::endl;
-//    }
-//    for (std::string str: WrAns) {
-//        std::cout << str << ' ';
-//    }
-//    std::cout << std::endl;
-
 }
