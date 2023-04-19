@@ -33,7 +33,8 @@ int main() {
 
 
     // НАЧАЛО ЦИКЛА ИГРЫ
-
+    // НА РЫБАКЕ НЕ РАБОТАЕТ - ОШИБКА Process finished with exit code 138 (interrupted by signal 10: SIGBUS)
+    // уже нет... что за...
 
 
     for (int times = 0; times < 10; times++) {
