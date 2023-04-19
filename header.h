@@ -50,32 +50,6 @@ bool LettersInWord(const std::string &word, std::map<std::string, std::array<int
     return true;
 }
 
-std::vector<int> conditions(const std::string &word, const std::string &ans) {
-    std::vector<int> report(5, 1);
-    if (ans == word)
-        return {0, 0, 0, 0, 0};
-    std::map<std::string, int> letters;
-    for (int i = 0; i < 5; ++i)
-        letters[ans.substr(i * 2, 2)]++;
-    for (int i = 0; i < 5; ++i) {
-        if (ans.substr(i * 2, 2) == word.substr(i * 2, 2)) {
-            report[i] = 3;
-            letters[word.substr(i * 2, 2)]--;
-        }
-    }
-    for (int i = 0; i < 5; ++i) {
-        if (ans.substr(i * 2, 2) != word.substr(i * 2, 2) && ans.find(word.substr(i * 2, 2)) != std::string::npos) {
-            if (letters[word.substr(i * 2, 2)] == 0)
-                report[i] = 1;
-            else {
-                report[i] = 2;
-                letters[word.substr(i * 2, 2)]--;
-            }
-        }
-    }
-    return report;
-}
-
 
 // функция фильтрации по условию игры на букву
 bool f(const std::string &letter, int pos, int num, const std::string &word) {

@@ -5,7 +5,7 @@ int main() {
     sleep(1);
     std::ios_base::sync_with_stdio(false);
     setlocale(LC_ALL, "Russian");
-    std::string alph{"абвгдежзийклмнопрстуфхчцщшъыьэюя"};
+    std::string alphabet{"абвгдежзийклмнопрстуфхчцщшъыьэюя"};
     std::ifstream in("/Users/romburunduk/CLionProjects/untitled/dict.txt");
     // Количество слов в изначальном словаре
     int n = 4914;
@@ -84,12 +84,12 @@ int main() {
             for (int l = 0; l < 32; l++) {
                 int i = 0;
                 for (int j = 0; j < dict.size(); j++) {
-                    if (dict.at(j).find(alph.substr(l * 2, 2)) != std::string::npos) {
+                    if (dict.at(j).find(alphabet.substr(l * 2, 2)) != std::string::npos) {
                         i += 1;
                     }
                 }
                 if (i != 0 && i < dict.size()) {
-                    mp.insert(std::make_pair(i, alph.substr(l * 2, 2)));
+                    mp.insert(std::make_pair(i, alphabet.substr(l * 2, 2)));
                 }
             }
 
